@@ -8,7 +8,6 @@ pipeline {
                     url: 'https://github.com/MalickReborn/Complete-_devsecops_gitops_CICD_project'
             }
         }
-    }
 
     stage('SonarQube Analysis') {
             steps {
