@@ -1,12 +1,12 @@
 pipeline {
     agent any
-
     stages {
         stage('Checkout') {
             steps {
-                // Checkout the SCM repository where the Jenkinsfile is stored
-                checkout scm
+                git branch: 'main',
+                    credentialsId: 'github-credentials',
+                    url: 'https://github.com/MalickReborn/Complete-_devsecops_gitops_CICD_project'
             }
         }
-
     }
+}
