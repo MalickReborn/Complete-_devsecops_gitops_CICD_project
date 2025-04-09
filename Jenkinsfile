@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    environment {
+        SONARQUBE_ENV = 'Sonarqube' // name from Jenkins > Configure System
+    }
+
     stages {
         stage('Checkout') {
             steps {
@@ -13,9 +17,9 @@ pipeline {
 
     stage('SonarQube Analysis') {
             steps {
-                withSonarQubeEnv('Sonarqube') {
-                    sh 'sonar-scanner -Dsonar.projectKey=$SONAR_PROJECT_KEY'
+                withSonarQubeEnv("${SONARQUBE_ENV}") {
+                    sh 'sonar-scanner' // this needs to be available on the Jenkins agent
                 }
             }
-        }
+    }
 }
