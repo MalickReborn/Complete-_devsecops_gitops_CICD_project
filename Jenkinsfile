@@ -10,4 +10,12 @@ pipeline {
             }
         }
     }
+
+    stage('SonarQube Analysis') {
+            steps {
+                withSonarQubeEnv('Sonarqube') {
+                    sh 'sonar-scanner -Dsonar.projectKey=$SONAR_PROJECT_KEY'
+                }
+            }
+        }
 }
