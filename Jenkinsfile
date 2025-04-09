@@ -2,7 +2,12 @@ pipeline {
     agent any
 
     environment {
-        SONARQUBE_ENV = 'Sonarqube' // name from Jenkins > Configure System
+        SONARQUBE_SERVER = 'Sonarqube' // The name of the SonarQube server as configured in Jenkins
+    }
+
+    tools {
+        // Assuming you have SonarQube scanner installed in Jenkins
+        sonarQubeScanner 'Sonarqube' // Name of the SonarQube Scanner as configured in Jenkins
     }
 
     stages {
@@ -17,9 +22,20 @@ pipeline {
 
     stage('SonarQube Analysis') {
             steps {
-                withSonarQubeEnv("${SONARQUBE_ENV}") {
-                    sh 'sonar-scanner' // this needs to be available on the Jenkins agent
+                script {
+                    // Ensure the sonar.properties file is in place (usually in the root directory)
+                    if (fileExists('sonar.properties')) {
+                        echo "Using sonar.properties file from SCM"
+                    } else {
+                        error "sonar.properties file not found in the repository!"
+                    }
+
+                    // Start the SonarQube analysis
+                    withSonarQubeEnv('SonarQube') {
+                        // Run the SonarQube scanner
+                        sh 'sonar-scanner'
+                    }
                 }
             }
-    }
+        }
 }
