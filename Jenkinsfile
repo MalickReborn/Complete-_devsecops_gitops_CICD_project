@@ -13,10 +13,10 @@ pipeline {
             steps {
                 script {
                     // Ensure the sonar.properties file is in place (usually in the root directory)
-                    if (fileExists('sonar.properties')) {
-                        echo "Using sonar.properties file from SCM"
+                    if (fileExists('sonar-project.properties')) {
+                        echo "Using sonar-project.properties file from SCM"
                     } else {
-                        error "sonar.properties file not found in the repository!"
+                        error "sonar-project.properties file not found in the repository!"
                     }
 
                     // Start the SonarQube analysis
