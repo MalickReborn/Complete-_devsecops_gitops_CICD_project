@@ -4,7 +4,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 git branch: 'main',
-                    credentialsId: 'github-credentials',
+                    credentialsId: 'github-login',
                     url: 'https://github.com/MalickReborn/Complete-_devsecops_gitops_CICD_project'
             }
         }
