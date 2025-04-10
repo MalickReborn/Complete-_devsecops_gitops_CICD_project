@@ -1,5 +1,8 @@
 pipeline {
     agent any
+    environment{
+        SONAR_TOKEN = credentials('SonarToken')
+    }
     stages {
         stage('Checkout') {
             steps {
@@ -12,17 +15,10 @@ pipeline {
     stage('SonarQube Analysis') {
             steps {
                 script {
-                    // Ensure the sonar.properties file is in place (usually in the root directory)
-                    if (fileExists('sonar-project.properties')) {
-                        echo "Using sonar-project.properties file from SCM"
-                    } else {
-                        error "sonar-project.properties file not found in the repository!"
-                    }
-
                     // Start the SonarQube analysis
                     withSonarQubeEnv('Sonarqube') {
                         // Run the SonarQube scanner which will automatically use the sonar.properties file
-                        sh 'sonar-scanner'
+                        sh 'sonar-scanner -Dsonar.login=${SONAR_TOKEN}'
                         echo 'SonarQube Analysis Completed'
                     }
                 }
