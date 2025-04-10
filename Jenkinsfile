@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         SONAR_TOKEN = credentials('SonarToken')
-        IMAGE_NAME = 'myFlaskForDevsecopsApp'
+        IMAGE_NAME = 'my_flask_for_devsecops_app'
     }
 
     stages {
