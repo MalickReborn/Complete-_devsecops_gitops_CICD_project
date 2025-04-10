@@ -2,7 +2,8 @@ pipeline {
     agent any
 
     environment {
-        SONAR_TOKEN = credentials('SonarToken')
+        SONAR_TOKEN = credentials('SonarToken'),
+        IMAGE_NAME = 'myFlaskForDevsecopsApp'
     }
 
     stages {
@@ -39,7 +40,16 @@ pipeline {
                 '''
             }
         }
-    }
+        }
+
+        stage('Docker Build') {
+            steps {
+                script {
+                    // Build the Docker image
+                    sh "docker build -t ${IMAGE_NAME}:latest ."
+                }
+            }
+        }
 
     post {
         always {
