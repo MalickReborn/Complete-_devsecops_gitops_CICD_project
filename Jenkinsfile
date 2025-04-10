@@ -5,6 +5,7 @@ pipeline {
         SONAR_TOKEN = credentials('SonarToken')
         IMAGE_NAME = 'my_flask_for_devsecops_app'
         DOCKER_HUB_CREDENTIALS = credentials('dockerhub_credentials')
+        DOCKER_HUB_USERNAME = 'malickguess'
     }
 
     stages {
@@ -58,7 +59,8 @@ pipeline {
                     withCredentials([usernamePassword(credentialsId: 'dockerhub_credentials', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
                         sh '''
                         echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
-                        docker push ${IMAGE_NAME}:latest
+                        docker tag ${IMAGE_NAME}:latest ${DOCKER_HUB_USERNAME}/${IMAGE_NAME}:latest
+                        docker push ${DOCKER_HUB_USERNAME}/${IMAGE_NAME}:latest
                         '''
                     }
                 }
@@ -67,7 +69,7 @@ pipeline {
 
         stage('Clean up') {
             steps {
-                sh 'docker rmi ${IMAGE_NAME}:latest'  // Optionally clean up the image after pushing
+                sh 'docker rmi ${DOCKER_HUB_USERNAME}/${IMAGE_NAME}:latest'  // Optionally clean up the image after pushing
             }
         }
         
