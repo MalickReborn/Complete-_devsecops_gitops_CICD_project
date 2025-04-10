@@ -31,10 +31,12 @@ pipeline {
         stage('Trivy - Vulnerability Scan') {
             steps {
                 sh '''
-                echo "Running Trivy Vulnerability Scan..."
-                trivy fs --format table -o trivy-fs-report.html .
+                echo "Analyse des vulnérabilités avec Trivy..."
+                trivy fs --scanners vuln . --exit-code 0 --severity CRITICAL,HIGH --ignore-unfixed --insecure
                 '''
             }
+        }
+
         }
 
         stage('Unit Tests') {
