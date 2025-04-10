@@ -31,18 +31,16 @@ pipeline {
         stage('Trivy - Vulnerability Scan') {
     steps {
         sh '''
+        echo "Copie du projet dans /home/project-scan pour le scan..."
+        cp -r /var/lib/jenkins/workspace/test /home/malick/projet-scan
 
-        echo "Copie du projet dans /home pour le scan..."
-        cp -r /var/lib/jenkins/workspace/test /home/project-scan
-
-        echo "Analyse des vulnérabilités avec Trivy dans /tmp/project-scan..."
-        trivy fs --scanners vuln /home/project-scan --exit-code 0 --severity CRITICAL,HIGH --ignore-unfixed
+        echo "Analyse des vulnérabilités avec Trivy dans /home/project-scan..."
+        trivy fs --scanners vuln /home/malick/projet-scan --exit-code 0 --severity CRITICAL,HIGH --ignore-unfixed
 
         echo "Scan terminé."
         '''
     }
 }
-
 
         stage('Unit Tests') {
             steps {
