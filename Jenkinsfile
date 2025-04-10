@@ -40,7 +40,6 @@ pipeline {
                 '''
             }
         }
-        }
 
         stage('Docker Build') {
             steps {
@@ -49,6 +48,7 @@ pipeline {
                     sh "docker build -t ${IMAGE_NAME}:latest ."
                 }
             }
+        }
         }
 
     post {
