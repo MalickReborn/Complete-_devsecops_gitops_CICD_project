@@ -18,7 +18,7 @@ pipeline {
                     // Start the SonarQube analysis
                     withSonarQubeEnv('Sonarqube') {
                         // Run the SonarQube scanner which will automatically use the sonar.properties file
-                        sh 'sonar-scanner -Dsonar.login=${SONAR_TOKEN}'
+                        sh '/opt/sonar-scanner/bin/sonar-scanner -Dsonar.login=${SONAR_TOKEN}'
                         echo 'SonarQube Analysis Completed'
                     }
                 }
