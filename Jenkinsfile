@@ -1,8 +1,10 @@
 pipeline {
     agent any
-    environment{
+
+    environment {
         SONAR_TOKEN = credentials('SonarToken')
     }
+
     stages {
         stage('Checkout') {
             steps {
@@ -12,22 +14,21 @@ pipeline {
             }
         }
 
-    stage('SonarQube Analysis') {
+        stage('SonarQube Analysis') {
             steps {
                 script {
-                    // Start the SonarQube analysis
                     withSonarQubeEnv('Sonarqube') {
-                        // Run the SonarQube scanner which will automatically use the sonar.properties file
-                        sh '/opt/sonar-scanner/bin/sonar-scanner -Dsonar.login=${SONAR_TOKEN}'
+                        sh """
+                            /opt/sonar-scanner/bin/sonar-scanner \
+                            -Dsonar.login=$SONAR_TOKEN
+                        """
                         echo 'SonarQube Analysis Completed'
                     }
                 }
             }
         }
-    }
 
-
-    stage('Trivy - Vulnerability Scan') {
+        stage('Trivy - Vulnerability Scan') {
             steps {
                 sh '''
                 echo "Running Trivy Vulnerability Scan..."
@@ -54,8 +55,24 @@ pipeline {
             }
         }
 
+        stage('Unit Tests') {
+            steps {
+                sh '''
+                python3 -m venv venv
+                . venv/bin/activate
+                pip install -r requirements.txt
+                python -m unittest discover
+                '''
+            }
+        }
+    }
 
-
-
-    
+    post {
+        always {
+            echo 'Pipeline completed.'
+        }
+        failure {
+            echo 'Something went wrong. Check above logs for details.'
+        }
+    }
 }
