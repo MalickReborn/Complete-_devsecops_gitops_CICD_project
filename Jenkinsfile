@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        SONAR_TOKEN = credentials('SonarToken'),
+        SONAR_TOKEN = credentials('SonarToken')
         IMAGE_NAME = 'myFlaskForDevsecopsApp'
     }
 
@@ -49,6 +49,7 @@ pipeline {
                 }
             }
         }
+        
         }
 
     post {
