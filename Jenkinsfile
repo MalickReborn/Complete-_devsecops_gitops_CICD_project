@@ -33,7 +33,7 @@ pipeline {
         sh '''
 
         echo "Copie du projet dans /home pour le scan..."
-        sudo -S cp -r /var/lib/jenkins/workspace/test /home/project-scan
+        cp -r /var/lib/jenkins/workspace/test /home/project-scan
 
         echo "Analyse des vulnérabilités avec Trivy dans /tmp/project-scan..."
         trivy fs --scanners vuln /home/project-scan --exit-code 0 --severity CRITICAL,HIGH --ignore-unfixed
