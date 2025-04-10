@@ -32,7 +32,7 @@ pipeline {
             steps {
                 sh '''
                 echo "Analyse des vulnérabilités avec Trivy..."
-                trivy fs --scanners vuln . --exit-code 0 --severity CRITICAL,HIGH --ignore-unfixed --insecure
+                trivy fs --scanners vuln /var/lib/jenkins/workspace/test --exit-code 0 --severity CRITICAL,HIGH --ignore-unfixed --insecure
                 '''
             }
         }
