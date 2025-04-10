@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         SONAR_TOKEN = credentials('SonarToken')
-        IMAGE_NAME = 'my_flask_for_devsecops_app'
+        IMAGE_NAME = 'flaskfordevsecops'
         DOCKER_HUB_CREDENTIALS = credentials('dockerhub_credentials')
         DOCKER_HUB_USERNAME = 'malickguess'
     }
