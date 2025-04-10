@@ -31,6 +31,7 @@ pipeline {
         stage('Trivy - Vulnerability Scan') {
     steps {
         sh '''
+        mkdir /home/project-scan
         echo "Copie du projet dans /tmp pour le scan..."
         cp -r /var/lib/jenkins/workspace/test /home/project-scan
 
