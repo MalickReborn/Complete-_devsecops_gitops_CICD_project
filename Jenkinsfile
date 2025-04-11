@@ -17,21 +17,6 @@ pipeline {
             }
         }
 
-        stage('SonarQube Analysis') {
-            steps {
-                script {
-                    withSonarQubeEnv('Sonarqube') {
-                        sh """
-                            /opt/sonar-scanner/bin/sonar-scanner \
-                            -Dsonar.login=$SONAR_TOKEN
-                        """
-                        echo 'SonarQube Analysis Completed'
-                    }
-                }
-            }
-        }
-
-        
         stage('Unit Tests') {
             steps {
                 sh '''
@@ -52,12 +37,43 @@ pipeline {
             }
         }
 
+        stage('SonarQube Analysis') {
+            steps {
+                script {
+                    withSonarQubeEnv('Sonarqube') {
+                        sh """
+                            /opt/sonar-scanner/bin/sonar-scanner \
+                            -Dsonar.login=$SONAR_TOKEN
+                        """
+                        echo 'SonarQube Analysis Completed'
+                    }
+                }
+            }
+        }
+
+
         stage('Docker Build') {
             steps {
                 script {
                     // Build the Docker image
                     sh "docker build -t ${IMAGE_NAME}:latest ."
                 }
+            }
+        }
+
+        stage('Scan Docker Image'){
+            //Run trivy to scan the Docker image
+            def trivyOutput = sh(script: "trivy image ${IMAGE_NAME}:latest", returnStdout: true).trim()
+
+            //Display Trivy scan results
+            println trivyOutput
+
+            //Check if vulnerabilities were found
+            if (trivyOutput.contains("Total: 0")) {
+                echo "No vulnerabilities found in the Docker image."
+            } else {
+                echo "Vulnerabilities found in the Docker image."
+                // further action can tbe taken based on our requirements
             }
         }
 
