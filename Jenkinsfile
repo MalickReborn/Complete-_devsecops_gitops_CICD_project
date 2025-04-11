@@ -17,36 +17,45 @@ pipeline {
             }
         }
 
-        stage('Unit Tests') {
+        stage('Setup & Install') {
             steps {
                 sh '''
                 python3 -m venv venv
                 . venv/bin/activate
-                pip install -r requirements.txt
+                export PIP_CACHE_DIR=$HOME/.cache/pip 
+                pip install --upgrade pip
+                pip install --cache-dir=$PIP_CACHE_DIR -r requirements.txt
+                '''
+            }
+        }
+
+        stage('Unit Tests') {
+            steps {
+                sh '''
+                . venv/bin/activate
                 python -m unittest discover
                 '''
             }
         }
 
-        sstage('Dependencies check') {
+        stage('Dependencies Check') {
             steps {
                 sh '''
-                python3 -m venv venv
                 . venv/bin/activate
+                export PIP_CACHE_DIR=$HOME/.cache/pip
                 pip-audit -r requirements.txt || true
                 pip-audit --fix || true
                 '''
             }
         }
 
-
         stage('SonarQube Analysis') {
             steps {
                 script {
                     withSonarQubeEnv('Sonarqube') {
                         sh """
-                            /opt/sonar-scanner/bin/sonar-scanner \
-                            -Dsonar.login=$SONAR_TOKEN
+                        /opt/sonar-scanner/bin/sonar-scanner \
+                        -Dsonar.login=$SONAR_TOKEN
                         """
                         echo 'SonarQube Analysis Completed'
                     }
@@ -54,36 +63,28 @@ pipeline {
             }
         }
 
-
         stage('Docker Build') {
             steps {
                 script {
-                    // Build the Docker image
                     sh "docker build -t ${IMAGE_NAME}:latest ."
                 }
             }
         }
 
-        stage('Scan Docker Image'){
-            steps{
-                script{
-                //Run trivy to scan the Docker image
-                def trivyOutput = sh(script: "trivy image ${IMAGE_NAME}:latest", returnStdout: true).trim()
-    
-                //Display Trivy scan results
-                println trivyOutput
-    
-                //Check if vulnerabilities were found
-                if (trivyOutput.contains("Total: 0")) {
-                    echo "No vulnerabilities found in the Docker image."
-                } else {
-                    echo "Vulnerabilities found in the Docker image."
-                    // further action can tbe taken based on our requirements
-                }
+        stage('Scan Docker Image') {
+            steps {
+                script {
+                    def trivyOutput = sh(script: "trivy image ${IMAGE_NAME}:latest", returnStdout: true).trim()
+                    println trivyOutput
+
+                    if (trivyOutput.contains("Total: 0")) {
+                        echo "No vulnerabilities found in the Docker image."
+                    } else {
+                        echo "Vulnerabilities found in the Docker image."
+                    }
                 }
             }
         }
-
 
         stage('Docker Push') {
             steps {
@@ -99,17 +100,16 @@ pipeline {
             }
         }
 
-
-        
-
-        stage('Clean up') {
+        stage('Clean Up') {
             steps {
-                sh "docker rmi ${DOCKER_HUB_USERNAME}/${IMAGE_NAME}:latest"
+                sh '''
+                docker rmi ${DOCKER_HUB_USERNAME}/${IMAGE_NAME}:latest || true
+                rm -rf venv
+                rm -rf $HOME/.cache/pip
+                '''
             }
         }
-
-        
-        }
+    }
 
     post {
         always {
