@@ -43,6 +43,15 @@ pipeline {
             }
         }
 
+        stage('Dependencies check'){
+            stepa{
+                sh """
+                pip-audit -r requirements.txt
+                pip audit --fix
+                """   
+            }
+        }
+
         stage('Docker Build') {
             steps {
                 script {
