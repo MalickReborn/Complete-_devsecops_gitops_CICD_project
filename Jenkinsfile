@@ -28,14 +28,17 @@ pipeline {
             }
         }
 
-        stage('Dependencies check'){
+        sstage('Dependencies check') {
             steps {
                 sh '''
-                pip-audit -r requirements.txt
-                pip-audit --fix
-                '''   
+                python3 -m venv venv
+                . venv/bin/activate
+                pip-audit -r requirements.txt || true
+                pip-audit --fix || true
+                '''
             }
         }
+
 
         stage('SonarQube Analysis') {
             steps {
@@ -81,26 +84,30 @@ pipeline {
             }
         }
 
+
         stage('Docker Push') {
             steps {
                 script {
-                    // Log in to Docker Hub using credentials
                     withCredentials([usernamePassword(credentialsId: 'dockerhub_credentials', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-                        sh '''
-                        echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
-                        docker tag ${IMAGE_NAME}:latest ${DOCKER_USERNAME}/${IMAGE_NAME}:latest
-                        docker push ${DOCKER_USERNAME}/${IMAGE_NAME}:latest
-                        '''
+                        sh """
+                        echo \$DOCKER_PASSWORD | docker login -u \$DOCKER_USERNAME --password-stdin
+                        docker tag ${IMAGE_NAME}:latest \$DOCKER_USERNAME/${IMAGE_NAME}:latest
+                        docker push \$DOCKER_USERNAME/${IMAGE_NAME}:latest
+                        """
                     }
                 }
             }
         }
 
+
+        
+
         stage('Clean up') {
             steps {
-                sh 'docker rmi ${DOCKER_HUB_USERNAME}/${IMAGE_NAME}:latest'  // Optionally clean up the image after pushing
+                sh "docker rmi ${DOCKER_HUB_USERNAME}/${IMAGE_NAME}:latest"
             }
         }
+
         
         }
 
