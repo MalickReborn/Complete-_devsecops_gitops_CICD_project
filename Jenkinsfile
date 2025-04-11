@@ -29,7 +29,7 @@ pipeline {
         }
 
         stage('Dependencies check'){
-            stepa{
+            steps {
                 sh """
                 pip-audit -r requirements.txt
                 pip audit --fix
