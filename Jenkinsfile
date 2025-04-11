@@ -30,10 +30,10 @@ pipeline {
 
         stage('Dependencies check'){
             steps {
-                sh """
+                sh '''
                 pip-audit -r requirements.txt
-                pip audit --fix
-                """   
+                pip-audit --fix
+                '''   
             }
         }
 
@@ -62,18 +62,22 @@ pipeline {
         }
 
         stage('Scan Docker Image'){
-            //Run trivy to scan the Docker image
-            def trivyOutput = sh(script: "trivy image ${IMAGE_NAME}:latest", returnStdout: true).trim()
-
-            //Display Trivy scan results
-            println trivyOutput
-
-            //Check if vulnerabilities were found
-            if (trivyOutput.contains("Total: 0")) {
-                echo "No vulnerabilities found in the Docker image."
-            } else {
-                echo "Vulnerabilities found in the Docker image."
-                // further action can tbe taken based on our requirements
+            steps{
+                script{
+                //Run trivy to scan the Docker image
+                def trivyOutput = sh(script: "trivy image ${IMAGE_NAME}:latest", returnStdout: true).trim()
+    
+                //Display Trivy scan results
+                println trivyOutput
+    
+                //Check if vulnerabilities were found
+                if (trivyOutput.contains("Total: 0")) {
+                    echo "No vulnerabilities found in the Docker image."
+                } else {
+                    echo "Vulnerabilities found in the Docker image."
+                    // further action can tbe taken based on our requirements
+                }
+                }
             }
         }
 
