@@ -217,8 +217,11 @@ Commands
 Run security analyses.
 
 
-#### 7. Create the webhook to autonate the run of pipeline
+#### 8. Create the webhook to autonate the run of pipeline
    To create a webhook for Jenkins in GitHub, first ensure your Jenkins server is publicly accessible (or at least reachable from GitHub) and that you have the GitHub plugin installed in Jenkins. Then, in Jenkins, go to your job configuration, check **"GitHub Project"**, and enter your GitHub repository URL. Under **"Source Code Management"**, choose **Git** and input your repository URL and credentials if necessary. Next, go to your GitHub repository, click on **Settings** > **Webhooks** > **Add webhook**. In the **Payload URL**, enter your Jenkins webhook endpoint, usually `http://<your-jenkins-domain>/github-webhook/`. Set the **Content type** to `application/json`, and choose to send **Just the push event** (or more, depending on your needs). Finally, click **Add webhook**. Now, every time you push code to the repository, GitHub will trigger a build in Jenkins.
+
+We conclude the first part of the project here. The second part related to the Gitops and Continuous Deployment will be available on the second config repository since we want to respect usages a goot habit avoinding to have the code and configuration materials within a sole repository.
+the config phase is available [here](https://github.com/MalickReborn/Complete-_devsecops_gitops_CICD_project_gitops_config.git).
 
 
 
