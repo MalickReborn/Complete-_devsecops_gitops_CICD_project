@@ -131,6 +131,115 @@ Docker Pipeline + Docker Commons | Enables Docker build, tag, and push operation
 Credentials | Stores secrets (GitHub token, DockerHub creds, etc.)
 
 
+Setup Pipeline
+1. Creating the Pipeline in Jenkins with SCM
+This step configures a Jenkins pipeline to fetch the Jenkinsfile from the GitHub repository using Source Code Management (SCM), ensuring the pipeline is versioned with the code.
+Commands
+Configure the pipeline in Jenkins.  
+Access Jenkins at http://<CI_VM_IP>:8080.  
+Click New Item, name it Flask-Pipeline, select Pipeline, and click OK.  
+In the Pipeline section:  
+Select Pipeline script from SCM.  
+Choose Git as SCM.  
+Enter Repository URL: https://github.com/ubc/flask-sample-app.git.  
+Specify Branch: main.  
+Set Script Path: Jenkinsfile.  
+If private, select Credential: github-token (see step 4).
+Save and click Build Now.
+2. Configuring a SonarQube Project and Creating sonar.properties
+A SonarQube project is set up to analyze Python code quality, with a sonar.properties file defining analysis parameters.
+Commands
+Create the SonarQube project and sonar.properties file.  
+Log in to SonarQube at http://<CI_VM_IP>:9000.  
+Click Create Project > Manually.  
+Set Project Key: flask-sample-app, Project Name: Flask Sample App.  
+Click Set Up.  
+Create sonar.properties in the project root:  
+properties
+
+sonar.projectKey=flask-sample-app
+sonar.projectName=Flask Sample App
+sonar.projectVersion=1.0
+sonar.sources=.
+sonar.language=py
+sonar.sourceEncoding=UTF-8
+sonar.host.url=http://<CI_VM_IP>:9000
+Add and push:  
+bash
+
+git add sonar.properties
+git commit -m "Add sonar.properties"
+git push origin main
+3. Configuring the SonarQube Server in Jenkins with an Access Token
+The SonarQube server is integrated into Jenkins using a Secret Text credential (access token) for authentication.
+Commands
+Configure SonarQube in Jenkins.  
+In SonarQube, go to My Account > Security > Generate Tokens, create flask-sonar-token, and copy it.  
+In Jenkins:  
+Go to Manage Jenkins > Manage Credentials > (global) > Add Credentials.  
+Set Kind: Secret Text, ID: sonar-token, Secret: paste token, Description: SonarQube Token.  
+Save.
+Go to Manage Jenkins > Configure System > SonarQube servers.  
+Click Add SonarQube:  
+Name: SonarQube.  
+Server URL: http://<CI_VM_IP>:9000.  
+Server authentication token: Select sonar-token.
+Save.
+4. Creating the GitHub Credential with a Personal Access Token
+A Username with Password credential is created for GitHub, using a Personal Access Token (PAT) to securely clone the repository.
+Commands
+Create the GitHub credential.  
+In GitHub, go to Settings > Developer settings > Personal access tokens > Generate new token:  
+Name: jenkins-flask-access.  
+Scope: repo.  
+Copy the token.
+In Jenkins:  
+Go to Manage Jenkins > Manage Credentials > (global) > Add Credentials.  
+Set Kind: Username with Password, ID: github-token.  
+Username: Your GitHub username.  
+Password: Paste the PAT.  
+Description: GitHub PAT.  
+Save.
+5. Creating the Dockerfile
+A Dockerfile is created to build the Docker image for the Flask application, specifying the environment, dependencies, and startup command.
+Commands
+Create the Dockerfile.  
+Create Dockerfile in the project root:  
+dockerfile
+
+FROM python:3.8-slim
+WORKDIR /app
+COPY requirements.txt .
+COPY . .
+RUN pip install --no-cache-dir -r requirements.txt
+EXPOSE 5000
+CMD ["python", "app.py"]
+Add and push:  
+bash
+
+git add Dockerfile
+git commit -m "Add Dockerfile"
+git push origin main
+Usage
+Once configured, the pipeline is executed via Jenkins to validate, test, and build the Flask application.
+Commands
+Run and monitor the pipeline.  
+Access Jenkins at http://<CI_VM_IP>:8080.  
+Verify Flask-Pipeline uses the Jenkinsfile.  
+Click Build Now.  
+Check SonarQube reports at http://<CI_VM_IP>:9000.  
+Review pip-audit results.  
+Confirm the Docker image on DockerHub.  
+Fix and rerun if thresholds fail.
+Security (DevSecOps)
+The pipeline embeds security checks at each step to block critical vulnerabilities:
+Static Analysis: SonarQube detects bugs and potential vulnerabilities in Python code.
+Dependency Scan: pip-audit identifies issues in requirements.txt.
+Image Scan: Trivy checks Docker images for high/critical vulnerabilities.
+Commands
+Run security analyses.
+
+
 
 
 
