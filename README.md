@@ -8,7 +8,9 @@ Code quality : Ensure robust and maintainable code through static code quality a
 Security : Embed DevSecOps practices (vulnerability scans, compliance) at every step.  
 GitOps : Manage configurations and deployments declaratively with Git as the single source of truth.  
 Reliability : Guarantee stable and reproducible deployments in production for the Flask application.
-Diagramme du pipeline
+
+Here you can see the global project pipeline diagram
+[![pipeline-diagram.png](https://i.postimg.cc/9MvpYrTk/pipeline-diagram.png)](https://postimg.cc/BLBHqZm5)
 
 
 ## Part 1 : Continuous Integration (CI)
@@ -65,6 +67,7 @@ https://docs.docker.com/engine/install/ubuntu/
 
 Jenkins:
 https://www.jenkins.io/doc/book/installing/linux/
+[![jenkins-installed.png](https://i.postimg.cc/SRF6zHbF/jenkins-installed.png)](https://postimg.cc/wy2yCfB0)
 
 Trivy:
 ```
@@ -74,12 +77,15 @@ echo deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main |
 sudo apt update
 sudo apt install -y trivy
 ```
+[![trivy-installed.png](https://i.postimg.cc/L4LBM4jH/trivy-installed.png)](https://postimg.cc/G93sFCMN)
+
 Sonarqube:
 You can use a docker container or installation from binaries ():
 ```
 docker run -d --name sonar -p 9000:9000 sonarqube:lts-community
 ```
 https://docs.sonarsource.com/sonarqube-server/10.4/setup-and-upgrade/install-the-server/introduction/
+
 
 Pip-audit and Unittest:
 Just add in the requirements.txt in addition to the flask minimum dependences the following ones : flask-testing and pip-audit
@@ -127,7 +133,9 @@ Steps
 - Create sonar.properties in the project root in your SCM repo:
     This file will contains some information like project key mainly, but possibly other variables
 - Add and push:  
-  
+  [![sonarcreatepage.png](https://i.postimg.cc/zf4W94Bb/sonarcreatepage.png)](https://postimg.cc/f3jJd2YD)
+
+  [![projet-sonarcreation.png](https://i.postimg.cc/KjDM3z5B/projet-sonarcreation.png)](https://postimg.cc/XBXJTnmY)
 
 3. Configuring the SonarQube Server in Jenkins with an Access Token
 
