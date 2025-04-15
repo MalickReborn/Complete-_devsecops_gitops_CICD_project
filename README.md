@@ -6,7 +6,7 @@ Automatisation : Accélérer les livraisons grâce à des tests, builds et dépl
 Qualité du code : Garantir un code robuste et maintenable grâce à des analyses statiques de qualité de code (détection de bugs, respect des conventions, réduction de la dette technique).  
 Sécurité : Intégrer des pratiques DevSecOps (scans de vulnérabilités, conformité) à chaque étape.  
 GitOps : Gérer les configurations et déploiements de manière déclarative avec Git comme source unique de vérité.  
-Fiabilité : Assurer des déploiements stables et reproductibles en production pour l’application Flask.
+Fiabilité : Assurer des déploiements stables et reproductibles en production pour l’application Flask>
 English
 This project implements a DevSecOps pipeline based on GitOps principles to automate, secure, and optimize the software development lifecycle, from continuous integration (CI) to continuous deployment (CD). It is designed for a Python Flask application, forked from https://github.com/ubc/flask-sample-app.git. The main objectives are:  
 Automation : Speed up delivery through automated testing, building, and deployments.  
