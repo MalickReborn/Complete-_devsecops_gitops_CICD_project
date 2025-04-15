@@ -129,66 +129,61 @@ Steps
   
 
 3. Configuring the SonarQube Server in Jenkins with an Access Token
+
 The SonarQube server is integrated into Jenkins using a Secret Text credential (access token) for authentication.
-Commands
-Configure SonarQube in Jenkins.  
-In SonarQube, go to My Account > Security > Generate Tokens, create flask-sonar-token, and copy it.  
+
+Steps
+
+Configure SonarQube in Jenkins  
+- In SonarQube, go to My Account > Security > Generate Tokens, create flask-sonar-token, and copy it.  
+
 In Jenkins:  
-Go to Manage Jenkins > Manage Credentials > (global) > Add Credentials.  
-Set Kind: Secret Text, ID: sonar-token, Secret: paste token, Description: SonarQube Token.  
-Save.
-Go to Manage Jenkins > Configure System > SonarQube servers.  
-Click Add SonarQube:  
-Name: SonarQube.  
-Server URL: http://<CI_VM_IP>:9000.  
-Server authentication token: Select sonar-token.
-Save.
+- Go to Manage Jenkins > Manage Credentials > (global) > Add Credentials.  
+- Set Kind: Secret Text, ID: sonar-token, Secret: paste token, Description: SonarQube Token.  
+- Save.
+- Go to Manage Jenkins > Configure System > SonarQube servers.  
+- Click Add SonarQube:  
+- Name: SonarQube.  
+- Server URL: http://<CI_VM_IP>:9000.  
+- Server authentication token: Select sonar-token.
+- Save.
+
+  
 4. Creating the GitHub Credential with a Personal Access Token
+
 A Username with Password credential is created for GitHub, using a Personal Access Token (PAT) to securely clone the repository.
-Commands
-Create the GitHub credential.  
-In GitHub, go to Settings > Developer settings > Personal access tokens > Generate new token:  
-Name: jenkins-flask-access.  
-Scope: repo.  
-Copy the token.
+  
+- In GitHub, go to Settings > Developer settings > Personal access tokens > Generate new token:  
+    Name: <githubtokenname>.  
+    Scope: repo.  
+- Copy the token.
+
 In Jenkins:  
-Go to Manage Jenkins > Manage Credentials > (global) > Add Credentials.  
-Set Kind: Username with Password, ID: github-token.  
-Username: Your GitHub username.  
-Password: Paste the PAT.  
-Description: GitHub PAT.  
-Save.
-5. Creating the Dockerfile
+- Go to Manage Jenkins > Manage Credentials > (global) > Add Credentials.  
+- Set Kind: Username with Password, ID: github-token.  
+- Username: Your GitHub username.  
+- Password: Paste the PAT.  
+- Description: GitHub PAT.  
+- Save.
+
+5. Create the Dockerfile
 A Dockerfile is created to build the Docker image for the Flask application, specifying the environment, dependencies, and startup command.
-Commands
-Create the Dockerfile.  
-Create Dockerfile in the project root:  
-dockerfile
 
-FROM python:3.8-slim
-WORKDIR /app
-COPY requirements.txt .
-COPY . .
-RUN pip install --no-cache-dir -r requirements.txt
-EXPOSE 5000
-CMD ["python", "app.py"]
-Add and push:  
-bash
 
-git add Dockerfile
-git commit -m "Add Dockerfile"
-git push origin main
 Usage
+
 Once configured, the pipeline is executed via Jenkins to validate, test, and build the Flask application.
-Commands
-Run and monitor the pipeline.  
-Access Jenkins at http://<CI_VM_IP>:8080.  
-Verify Flask-Pipeline uses the Jenkinsfile.  
-Click Build Now.  
-Check SonarQube reports at http://<CI_VM_IP>:9000.  
-Review pip-audit results.  
-Confirm the Docker image on DockerHub.  
-Fix and rerun if thresholds fail.
+
+Steps:
+- Run and monitor the pipeline.  
+-Access Jenkins at http://<CI_VM_IP>:8080.  
+- Verify Flask-Pipeline uses the Jenkinsfile.  
+- Click Build Now.  
+- Check SonarQube reports at http://<CI_VM_IP>:9000.  
+- Review pip-audit results.  
+- Confirm the Docker image on DockerHub.  
+- Fix and rerun if thresholds fail.
+  
 Security (DevSecOps)
 The pipeline embeds security checks at each step to block critical vulnerabilities:
 Static Analysis: SonarQube detects bugs and potential vulnerabilities in Python code.
