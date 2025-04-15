@@ -1,6 +1,6 @@
-DevSecOps/GitOps Pipeline
+# DevSecOps/GitOps Pipeline
 
-Project Overview and Goals
+## Project Overview and Goals
 
   This project implements a DevSecOps pipeline based on GitOps principles to automate, secure, and optimize the software development lifecycle, from continuous integration (CI) to continuous deployment (CD). It is designed for a Python Flask application, forked from https://github.com/ubc/flask-sample-app.git. The main objectives are:  
 Automation : Speed up delivery through automated testing, building, and deployments.  
@@ -11,8 +11,9 @@ Reliability : Guarantee stable and reproducible deployments in production for th
 Diagramme du pipeline
 
 
-Part 1 : Continuous Integration (CI)
-Prérequisite
+## Part 1 : Continuous Integration (CI)
+
+###Prérequisite
 
   To set up the CI pipeline for the Python Flask application, the following tools and infrastructure are required:  
 Infrastructure:  
@@ -35,7 +36,7 @@ Trivy: Security scanner for Docker images.
 DockerHub: Registry for storing Docker images after building.
 
 
-CI pipeline architecture
+### CI pipeline architecture
 
   The CI pipeline for the Flask application, orchestrated by Jenkins, follows these key steps:  
 Code retrieval : Clone the Git repository forked from https://github.com/ubc/flask-sample-app.git.  
@@ -47,7 +48,7 @@ Security scan : Analyze the Docker image with Trivy to identify vulnerabilities.
 Publication : Push the validated image to DockerHub.
 Quality thresholds (e.g., 80% test coverage, no critical bugs) and security thresholds (no critical vulnerabilities) are enforced to block progression if needed.
 
-Installation
+### Installation
 
   Configure the CI VM (Ubuntu 22.04 LTS, 4 vCPUs, 8 Go RAM, 50 Go SSD). / Set up the CI VM (Ubuntu 22.04 LTS, 4 vCPUs, 8 GB RAM, 50 GB SSD).
 YOu can set a EC2 or any VM on any Cloud provider , but for this project i have set a local Vmware VM.
@@ -96,7 +97,7 @@ Docker Pipeline + Docker Commons | Enables Docker build, tag, and push operation
 Credentials | Stores secrets (GitHub token, DockerHub creds, etc.)
 
 
-Setup Pipeline
+### Setup Pipeline
 
 1. Creating the Pipeline in Jenkins with SCM
   This step configures a Jenkins pipeline to fetch the Jenkinsfile from the GitHub repository using Source Code Management (SCM), ensuring the pipeline is versioned with the code.
@@ -170,7 +171,7 @@ In Jenkins:
   A Dockerfile is created to build the Docker image for the Flask application, specifying the environment, dependencies, and startup command.
 
 
-Usage
+### Usage
 
   Once configured, the pipeline is executed via Jenkins to validate, test, and build the Flask application.
 
