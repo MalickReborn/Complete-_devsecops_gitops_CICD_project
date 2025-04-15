@@ -1,13 +1,6 @@
 Pipeline DevSecOps/GitOps
 Présentation et objectifs globaux du projet
-Français
-Ce projet met en œuvre un pipeline DevSecOps basé sur les principes GitOps pour automatiser, sécuriser et optimiser le cycle de vie du développement logiciel, de l’intégration continue (CI) au déploiement continu (CD). Il est conçu pour une application Python Flask, basée sur un dépôt forké depuis https://github.com/ubc/flask-sample-app.git. Les objectifs principaux sont :  
-Automatisation : Accélérer les livraisons grâce à des tests, builds et déploiements automatisés.  
-Qualité du code : Garantir un code robuste et maintenable grâce à des analyses statiques de qualité de code (détection de bugs, respect des conventions, réduction de la dette technique).  
-Sécurité : Intégrer des pratiques DevSecOps (scans de vulnérabilités, conformité) à chaque étape.  
-GitOps : Gérer les configurations et déploiements de manière déclarative avec Git comme source unique de vérité.  
-Fiabilité : Assurer des déploiements stables et reproductibles en production pour l’application Flask>
-English
+
 This project implements a DevSecOps pipeline based on GitOps principles to automate, secure, and optimize the software development lifecycle, from continuous integration (CI) to continuous deployment (CD). It is designed for a Python Flask application, forked from https://github.com/ubc/flask-sample-app.git. The main objectives are:  
 Automation : Speed up delivery through automated testing, building, and deployments.  
 Code quality : Ensure robust and maintainable code through static code quality analysis (bug detection, adherence to conventions, technical debt reduction).  
@@ -15,33 +8,11 @@ Security : Embed DevSecOps practices (vulnerability scans, compliance) at every 
 GitOps : Manage configurations and deployments declaratively with Git as the single source of truth.  
 Reliability : Guarantee stable and reproducible deployments in production for the Flask application.
 Diagramme du pipeline
-Français
-Diagramme à venir : Une représentation visuelle du pipeline DevSecOps/GitOps, couvrant les étapes de l’intégration continue (CI) et du déploiement continu (CD) pour l’application Python Flask, sera ajoutée ici une fois fournie.
-English
-Diagram to come: A visual representation of the DevSecOps/GitOps pipeline, covering the stages of continuous integration (CI) and continuous deployment (CD) for the Python Flask application, will be added here once provided.
-Partie 1 : Continuous Integration (CI)
-Prérequis
-Français
-Pour configurer le pipeline CI pour l’application Python Flask, les outils suivants et l’infrastructure suivante sont nécessaires :  
-Infrastructure :  
-VM CI : Une machine virtuelle dédiée pour installer les outils CI (Jenkins, SonarQube, etc.).  
-OS : Ubuntu 22.04 LTS.  
-CPU : 4 vCPUs.  
-RAM : 8 Go.  
-Stockage : 50 Go SSD.  
-Réseau : Accès Internet pour cloner le dépôt, pousser vers DockerHub, et interagir avec SonarQube.
-Cluster Kubernetes : Requis pour la partie déploiement continu (CD). Pour ce projet, nous avons choisi de créer deux VMs supplémentaires sur VMware : une pour le nœud maître et une pour le nœud worker. Les détails seront fournis dans la partie CD.
-Outils :  
-Git : Gestion du code source via un dépôt forké sur GitHub.  
-Jenkins : Orchestration du pipeline CI.  
-Python 3.8+ : Environnement d’exécution pour l’application Flask.  
-Python unittest : Framework pour les tests unitaires automatisés.  
-pip-audit : Analyse des vulnérabilités des dépendances Python.  
-SonarQube : Analyse statique pour évaluer la qualité du code Python (bugs, code smells, dette technique, couverture de tests).  
-Docker : Pour construire et tester les images de l’application Flask.  
-Trivy : Scanner de sécurité pour les images Docker.  
-DockerHub : Registre pour stocker les images Docker après le build.
-English
+
+
+Part 1 : Continuous Integration (CI)
+Prérequisite
+
 To set up the CI pipeline for the Python Flask application, the following tools and infrastructure are required:  
 Infrastructure:  
 CI VM: A virtual machine dedicated to installing CI tools (Jenkins, SonarQube, etc.).  
@@ -61,18 +32,10 @@ SonarQube: Static analysis to assess Python code quality (bugs, code smells, tec
 Docker: For building and testing Flask application images.  
 Trivy: Security scanner for Docker images.  
 DockerHub: Registry for storing Docker images after building.
-Architecture du pipeline CI
-Français
-Le pipeline CI pour l’application Flask, orchestré par Jenkins, suit ces étapes clés :  
-Récupération du code : Clone du dépôt Git forké depuis https://github.com/ubc/flask-sample-app.git.  
-Analyse statique de qualité de code : Exécution de SonarQube pour détecter bugs, code smells et dette technique dans le code Python.  
-Analyse des dépendances : Utilisation de pip-audit pour identifier les vulnérabilités dans les dépendances Python (via requirements.txt).  
-Tests unitaires : Exécution des tests automatisés avec Python unittest pour valider la logique de l’application.  
-Build : Création d’une image Docker pour l’application Flask.  
-Scan de sécurité : Analyse de l’image Docker avec Trivy pour identifier les vulnérabilités.  
-Publication : Push de l’image validée vers DockerHub.
-Les seuils de qualité (ex. : 80 % de couverture de tests, aucun bug critique) et de sécurité (aucune vulnérabilité critique) sont appliqués pour bloquer la progression si nécessaire.
-English
+
+
+CI pipeline architecture
+
 The CI pipeline for the Flask application, orchestrated by Jenkins, follows these key steps:  
 Code retrieval : Clone the Git repository forked from https://github.com/ubc/flask-sample-app.git.  
 Static code quality analysis : Run SonarQube to detect bugs, code smells, and technical debt in Python code.  
@@ -85,8 +48,10 @@ Quality thresholds (e.g., 80% test coverage, no critical bugs) and security thre
 
 Installation
 
-Configurez la VM CI (Ubuntu 22.04 LTS, 4 vCPUs, 8 Go RAM, 50 Go SSD). / Set up the CI VM (Ubuntu 22.04 LTS, 4 vCPUs, 8 GB RAM, 50 GB SSD).
-Installez Git, Python 3.8+ / Install Git, Python 3.8+:
+Configure the CI VM (Ubuntu 22.04 LTS, 4 vCPUs, 8 Go RAM, 50 Go SSD). / Set up the CI VM (Ubuntu 22.04 LTS, 4 vCPUs, 8 GB RAM, 50 GB SSD).
+YOu can set a EC2 or any VM on any Cloud provider , but for this project i have set a local Vmware VM.
+
+Install Git, Python 3.8+ / Install Git, Python 3.8+:
 ``
 sudo apt update
 sudo apt install -y git 
@@ -118,9 +83,9 @@ Pip-audit and Unittest:
 Just add in the requirements.txt in addition to the flask minimum dependences the following ones : flask-testing and pip-audit
 
 
-In order to have jenkins work well with all these tools, you'll need to configure some plugins , server set up, and credentials.
+In order to have jenkins working well with all these tools, you'll need to configure some plugins , server set up, and credentials.
 
-the following plugins have to be added to jenkins: 
+the following plugins have to be install into jenkins: 
 Plugin Name | Description
 Pipeline (a.k.a. Workflow) Plugin | Core plugin for defining pipelines as code (Jenkinsfile)
 GitHub + GitHub Branch Source + Git | Connects Jenkins with GitHub repositories
@@ -132,44 +97,37 @@ Credentials | Stores secrets (GitHub token, DockerHub creds, etc.)
 
 
 Setup Pipeline
+
 1. Creating the Pipeline in Jenkins with SCM
 This step configures a Jenkins pipeline to fetch the Jenkinsfile from the GitHub repository using Source Code Management (SCM), ensuring the pipeline is versioned with the code.
-Commands
-Configure the pipeline in Jenkins.  
-Access Jenkins at http://<CI_VM_IP>:8080.  
-Click New Item, name it Flask-Pipeline, select Pipeline, and click OK.  
+Steps
+- Configure the pipeline in Jenkins.  
+- Access Jenkins at http://<CI_VM_IP>:8080.  
+- Click New Item, name it Flask-Pipeline, select Pipeline, and click OK.  
 In the Pipeline section:  
-Select Pipeline script from SCM.  
-Choose Git as SCM.  
-Enter Repository URL: https://github.com/ubc/flask-sample-app.git.  
-Specify Branch: main.  
-Set Script Path: Jenkinsfile.  
-If private, select Credential: github-token (see step 4).
-Save and click Build Now.
-2. Configuring a SonarQube Project and Creating sonar.properties
-A SonarQube project is set up to analyze Python code quality, with a sonar.properties file defining analysis parameters.
-Commands
-Create the SonarQube project and sonar.properties file.  
-Log in to SonarQube at http://<CI_VM_IP>:9000.  
-Click Create Project > Manually.  
-Set Project Key: flask-sample-app, Project Name: Flask Sample App.  
-Click Set Up.  
-Create sonar.properties in the project root:  
-properties
+- Select Pipeline script from SCM.  
+- Choose Git as SCM.  
+- Enter Repository URL: https://github.com/ubc/<your repo.git>.  
+_ Specify Branch: <branch_name>.
+-Set Script Path: Jenkinsfile.  
+- If private, select Credential: github-token.
+- Save and click Build Now to test.
 
-sonar.projectKey=flask-sample-app
-sonar.projectName=Flask Sample App
-sonar.projectVersion=1.0
-sonar.sources=.
-sonar.language=py
-sonar.sourceEncoding=UTF-8
-sonar.host.url=http://<CI_VM_IP>:9000
-Add and push:  
-bash
+2.Create a sonar project
 
-git add sonar.properties
-git commit -m "Add sonar.properties"
-git push origin main
+Since we have a code analysis section we then have to configure a SonarQube Project and Create sonar-project.properties file
+A SonarQube project is set up to analyze Python code quality, with a sonar-project.properties file defining analysis parameters.
+Steps
+  
+- Log in to SonarQube at http://<CI_VM_IP>:9000.  
+- Click Create Project > Manually.  
+- Set Project Key: flask-sample-app, Project Name: Flask Sample App.  
+- Click Set Up.  
+- Create sonar.properties in the project root in your SCM repo:
+    This file will contains some information like project key mainly, but possibly other variables
+- Add and push:  
+  
+
 3. Configuring the SonarQube Server in Jenkins with an Access Token
 The SonarQube server is integrated into Jenkins using a Secret Text credential (access token) for authentication.
 Commands
