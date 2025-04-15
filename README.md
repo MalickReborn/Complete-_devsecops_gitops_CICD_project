@@ -54,10 +54,10 @@ Quality thresholds (e.g., 80% test coverage, no critical bugs) and security thre
 YOu can set a EC2 or any VM on any Cloud provider , but for this project i have set a local Vmware VM.
 
 Install Git, Python 3.8+ / Install Git, Python 3.8+:
-``
+```
 sudo apt update
 sudo apt install -y git 
-``
+```
 
 Docker:
 https://docs.docker.com/engine/install/ubuntu/
@@ -67,18 +67,18 @@ Jenkins:
 https://www.jenkins.io/doc/book/installing/linux/
 
 Trivy:
-``
+```
 sudo apt-get install -y wget apt-transport-https gnupg lsb-release
 wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo apt-key add -
 echo deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main | sudo tee -a /etc/apt/sources.list.d/trivy.list
 sudo apt update
 sudo apt install -y trivy
-``
+```
 Sonarqube:
 You can use a docker container or installation from binaries ():
-``
+```
 docker run -d --name sonar -p 9000:9000 sonarqube:lts-community
-``
+```
 https://docs.sonarsource.com/sonarqube-server/10.4/setup-and-upgrade/install-the-server/introduction/
 
 Pip-audit and Unittest:
