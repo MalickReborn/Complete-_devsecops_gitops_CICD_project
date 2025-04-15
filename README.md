@@ -105,7 +105,7 @@ Credentials | Stores secrets (GitHub token, DockerHub creds, etc.)
 
 ### Setup Pipeline
 
-1. Creating the Pipeline in Jenkins with SCM
+#### 1. Creating the Pipeline in Jenkins with SCM
   This step configures a Jenkins pipeline to fetch the Jenkinsfile from the GitHub repository using Source Code Management (SCM), ensuring the pipeline is versioned with the code.
 Steps
 - Configure the pipeline in Jenkins.  
@@ -120,7 +120,7 @@ _ Specify Branch: <branch_name>.
 - If private, select Credential: github-token.
 - Save and click Build Now to test.
 
-2.Create a sonar project
+#### 2.Create a sonar project
 
   Since we have a code analysis section we then have to configure a SonarQube Project and Create sonar-project.properties file
 A SonarQube project is set up to analyze Python code quality, with a sonar-project.properties file defining analysis parameters.
@@ -137,7 +137,7 @@ Steps
 
   [![projet-sonarcreation.png](https://i.postimg.cc/KjDM3z5B/projet-sonarcreation.png)](https://postimg.cc/XBXJTnmY)
 
-3. Configuring the SonarQube Server in Jenkins with an Access Token
+#### 3. Configuring the SonarQube Server in Jenkins with an Access Token
 
   The SonarQube server is integrated into Jenkins using a Secret Text credential (access token) for authentication.
 
@@ -156,9 +156,10 @@ In Jenkins:
 - Server URL: http://<CI_VM_IP>:9000.  
 - Server authentication token: Select sonar-token.
 - Save.
+  [![sonarserverjenkins.png](https://i.postimg.cc/QCH2H9Dn/sonarserverjenkins.png)](https://postimg.cc/SYbTPKJW)
 
   
-4. Creating the GitHub Credential with a Personal Access Token
+#### 4. Creating the GitHub Credential with a Personal Access Token
 
   A Username with Password credential is created for GitHub, using a Personal Access Token (PAT) to securely clone the repository.
   
@@ -175,31 +176,49 @@ In Jenkins:
 - Description: GitHub PAT.  
 - Save.
 
-5. Create the Dockerfile
+#### 5. Create the Dockerfile
   A Dockerfile is created to build the Docker image for the Flask application, specifying the environment, dependencies, and startup command.
+the exemple
+[Our simple Dockerfile example](https://github.com/MalickReborn/Complete-_devsecops_gitops_CICD_project/blob/main/Dockerfile)
+
+#### 6. Write your Jenkinsfile that will integrate all the steps within as we did in this project
+[Our simple Jenkinsfile example](https://github.com/MalickReborn/Complete-_devsecops_gitops_CICD_project/blob/main/Jenkinsfile)
 
 
-### Usage
+### 6. Usage
 
   Once configured, the pipeline is executed via Jenkins to validate, test, and build the Flask application.
 
 Steps:
 - Run and monitor the pipeline.  
--Access Jenkins at http://<CI_VM_IP>:8080.  
-- Verify Flask-Pipeline uses the Jenkinsfile.  
-- Click Build Now.  
-- Check SonarQube reports at http://<CI_VM_IP>:9000.  
-- Review pip-audit results.  
-- Confirm the Docker image on DockerHub.  
+- Access Jenkins at http://<CI_VM_IP>:8080.  
+- Verify your Flask Pipeline uses the Jenkinsfile.  
+- Click Build Now.
+- check the unit tests success
+  [![Screenshot-from-2025-04-15-23-07-30.png](https://i.postimg.cc/kGPn3vKv/Screenshot-from-2025-04-15-23-07-30.png)](https://postimg.cc/47wCpt8Y)
+- Review pip-audit results.
+  [![PIP-AUDIT-ANALYSED.png](https://i.postimg.cc/Y9f6Ybrv/PIP-AUDIT-ANALYSED.png)](https://postimg.cc/S2RYpLz4)  
+- Check SonarQube reports at http://<CI_VM_IP>:9000.
+  [![soanr-analysis-done.png](https://i.postimg.cc/KY7kHjdV/soanr-analysis-done.png)](https://postimg.cc/94MQ4mXt)  
+- Ensure that the container image has been build and scanned from vulnerabilities
+  [![trivy-image-scanned.png](https://i.postimg.cc/jjTCPKLh/trivy-image-scanned.png)](https://postimg.cc/3kLKQsjy)
+  [![TRIVY-IMAGE-SCANNED2.png](https://i.postimg.cc/CK454t8p/TRIVY-IMAGE-SCANNED2.png)](https://postimg.cc/hJfKD2M2)
+- Confirm the Docker image on DockerHub.
+  [![docker-image-pushed.png](https://i.postimg.cc/fLxK5MKT/docker-image-pushed.png)](https://postimg.cc/zbGKGZ69)  
 - Fix and rerun if thresholds fail.
+  [![pipeline-success.png](https://i.postimg.cc/Kv5WxDtv/pipeline-success.png)](https://postimg.cc/D886csCt)
   
-Security (DevSecOps)
+#### 7. about Security (DevSecOps)
   The pipeline embeds security checks at each step to block critical vulnerabilities:
 Static Analysis: SonarQube detects bugs and potential vulnerabilities in Python code.
 Dependency Scan: pip-audit identifies issues in requirements.txt.
 Image Scan: Trivy checks Docker images for high/critical vulnerabilities.
 Commands
 Run security analyses.
+
+
+#### 7. Create the webhook to autonate the run of pipeline
+   To create a webhook for Jenkins in GitHub, first ensure your Jenkins server is publicly accessible (or at least reachable from GitHub) and that you have the GitHub plugin installed in Jenkins. Then, in Jenkins, go to your job configuration, check **"GitHub Project"**, and enter your GitHub repository URL. Under **"Source Code Management"**, choose **Git** and input your repository URL and credentials if necessary. Next, go to your GitHub repository, click on **Settings** > **Webhooks** > **Add webhook**. In the **Payload URL**, enter your Jenkins webhook endpoint, usually `http://<your-jenkins-domain>/github-webhook/`. Set the **Content type** to `application/json`, and choose to send **Just the push event** (or more, depending on your needs). Finally, click **Add webhook**. Now, every time you push code to the repository, GitHub will trigger a build in Jenkins.
 
 
 
