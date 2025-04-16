@@ -2,6 +2,7 @@
 
 from app import app
 from flask import request
+from prometheus_flask_exporter import PrometheusMetrics
 
 items = []
 
